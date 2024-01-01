@@ -5,8 +5,8 @@ This repo contains two examples of the **dandysi/laravel-monorepo** package in u
 Both examples contain three microservices relating to a fictional online blog.
 
 1. Frontend (http://localhost:8001/api) - A frontend api returning published articles
-2. Backend (http://localhost:8002/api) - A backend api allowing creating/deletion and publishing of articles
-3. Chores - A service running scheduled tasks. One runs every minuted createing random articles. The other runs every 10 mins deleting all articles
+2. Backend (http://localhost:8002/api) - A backend api allowing creation/deletion and publishing of articles
+3. Chores - A service running scheduled tasks. One runs every minute creating random articles. The other runs every 10 mins deleting all articles
 
 All three services connect to the same database.
 
