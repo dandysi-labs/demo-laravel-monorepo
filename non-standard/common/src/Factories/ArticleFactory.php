@@ -19,8 +19,8 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
         return [
-            'headline' => fake()->name(),
-            'content' => fake()->sentence(245),
+            'headline' => fake()->text(Article::MAX_LENGTH_HEADLINE),
+            'content' => fake()->text(Article::MAX_LENGTH_CONTENT),
             'status' => fake()->randomElement(Article::STATUSES),
             'priority' => Article::PRIORITY_NORMAL,
             'author' => fake()->randomElement(Article::AUTHORS),

@@ -23,7 +23,8 @@ class ArticleResource extends JsonResource
             'priority' => $this->resource->priority,
             'author' => $this->resource->author,
             'created_at' => $this->resource->created_at,
-            'created_by' => $this->resource->created_by
+            'created_by' => $this->resource->created_by,
+            'num_views' => $this->resource->num_views
         ];
     }
 }

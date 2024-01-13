@@ -1,0 +1,3 @@
+STOP SLAVE;
+CHANGE MASTER TO master_delay=60;
+START SLAVE;

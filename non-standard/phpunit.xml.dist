@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="laravel/vendor/autoload.php"
          colors="true"
-        cacheResult="false"
+         cacheResult="false"
 >
     <testsuites>
         <testsuite name="Common">

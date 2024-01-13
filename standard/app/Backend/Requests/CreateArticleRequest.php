@@ -11,8 +11,8 @@ class CreateArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'headline' => 'required|string|max:255',
-            'content' => 'required|string|max:255',
+            'headline' => 'required|string|max:' . Article::MAX_LENGTH_HEADLINE,
+            'content' => 'required|string|max:' . Article::MAX_LENGTH_CONTENT,
             'category' => ['required','string', Rule::in(Article::CATEGORIES)],
             'author' => ['required', 'string', Rule::in(Article::AUTHORS)],
         ];

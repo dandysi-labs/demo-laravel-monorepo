@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     use HasFactory;
+
+    const MAX_LENGTH_HEADLINE = 100;
+    const MAX_LENGTH_CONTENT = 1000;    
+
     const STATUS_PUBLISHED = 'Published';
     const STATUS_DRAFT = 'Draft';
     const STATUS_SUBMITTED = 'Submitted';
@@ -42,5 +46,5 @@ class Article extends Model
         self::CATEGORY_OTHER
     ];
 
-    protected $fillable = ['headline', 'content', 'status', 'category', 'author', 'priority', 'created_by'];
+    protected $fillable = ['headline', 'content', 'status', 'category', 'author', 'priority', 'created_by', 'num_views'];
 }

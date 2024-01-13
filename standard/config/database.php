@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Dandysi\Laravel\Monorepo\MonorepoProvider;
 
 return [
 
@@ -33,8 +34,7 @@ return [
     |
     */
 
-    'connections' => [
-
+    'connections' => MonorepoProvider::dbConnectionsConfig([
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
@@ -62,7 +62,7 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-    ],
+    ]),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,60 +1,50 @@
-# Demo Laravel Monorepo
+# Demo Laravel Monorepo  
 
-This repo contains two examples of the **dandysi/laravel-monorepo** package in use.
+This repo contains two examples of the **dandysi/laravel-monorepo** package in use. Both examples contain three microservices relating to a fictional online blog:
 
-Both examples contain three microservices relating to a fictional online blog.
+|Microservice|Description|URL|
+|:--|:--|:--|
+|Frontend|A frontend api returning published articles| http://localhost:8001/api|
+|Backend|A backend api allowing creation/deletion and publishing of articles| http://localhost:8001/api|
+|Chores|A service running scheduled tasks. One runs every minute creating random articles. The other runs every 10 mins deleting all articles|N/A|
 
-1. Frontend (http://localhost:8001/api) - A frontend api returning published articles
-2. Backend (http://localhost:8002/api) - A backend api allowing creation/deletion and publishing of articles
-3. Chores - A service running scheduled tasks. One runs every minute creating random articles. The other runs every 10 mins deleting all articles
-
-All three services connect to the same database.
+Furthermore two database servers are running a master and replication slave. All microservices connect to the master database for reads/writes with the exception of the frontend. The frontend connects to the master for writes only and uses the replication slave for reads. The replication slave is delayed for 60 seconds behind the master for updates (to demonstrate that the frontend is connected to different server for read operations).
 
 ## Standard
 
-This example follows the standrad Laravel directory structure, with all source code in the **src** directory and all test code in the **tests** directory.
+This example follows the standard Laravel directory structure, with all source code in the **src** directory and all test code in the **tests** directory.
 
 ## Non Standard
 
 This example does not follow the normal Laravel directory structure and instead stores each microservice related source/test code in individual directories.
 
-## Start with Docker
+## Running Examples
 
-Build the docker images:
-
-```bash
-make build
-```
-Start the docker containers:
+A sample script named demo has been included to run the different examples. The commands below assume you have execute permissions on the script file. You can achieve this by running:
 
 ```bash
-make up
+chmod +x ./demo
 ```
 
-Tail the docker logs:
+The script can be called with the following format (where example is either "standard" or "non-standard"):
 
 ```bash
-make logs
+./demo <example> <action>
 ```
 
-Stop and remove the docker containers:
+|Action|Description  |
+|:--|:--|
+| build | Build the Docker images (this will also stop the previous containers and start new ones after the build has finished) |
+|up|Start the Docker containers|
+|logs|Tail the Docker container logs|
+|down|Stop and remove the Docker containers|
+|install|Run a Composer install locally|
+|test|Run PHP unit tests locally|
+
+For example, to build and run the standard example in Docker:
 
 ```bash
-make down
-```
-
-## Using Locally
-
-Run a composer install:
-
-```bash
-make install
-```
-
-Run php unit tests:
-
-```bash
-make test
+./demo standard build
 ```
 
 ## License

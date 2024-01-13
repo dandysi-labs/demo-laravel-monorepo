@@ -34,8 +34,8 @@ class ArticleService
         $faker = Factory::create();
 
         $article = Article::make([
-            'headline' => $faker->name(),
-            'content' => $faker->paragraph(),
+            'headline' => $faker->text(Article::MAX_LENGTH_HEADLINE),
+            'content' => $faker->text(Article::MAX_LENGTH_CONTENT),
             'status' => Article::STATUS_DRAFT,
             'priority' => Article::PRIORITY_NORMAL,
             'author' => $faker->randomElement(Article::AUTHORS),

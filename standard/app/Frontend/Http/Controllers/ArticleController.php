@@ -16,6 +16,9 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         abort_if(Article::STATUS_PUBLISHED !== $article->status, 404);
+
+        $article->increment('num_views');
+
         return new ArticleResource($article);
     }
 }

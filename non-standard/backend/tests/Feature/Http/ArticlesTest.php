@@ -117,8 +117,8 @@ class ArticlesTest extends TestCase
         $data = [
             'category' => $category,
             'author' => Article::AUTHOR_DAVE,
-            'headline' => fake()->paragraph(),
-            'content'=> fake()->paragraph(),
+            'headline' => fake()->text(Article::MAX_LENGTH_HEADLINE),
+            'content'=> fake()->text(Article::MAX_LENGTH_CONTENT)
         ];
 
         $response = $this->json('POST', '/api/articles', $data);
@@ -169,7 +169,8 @@ class ArticlesTest extends TestCase
             'author',
             'priority',
             'created_at',
-            'created_by'
+            'created_by',
+            'num_views'
         ];
 
         if ($expectedItems > 1) {

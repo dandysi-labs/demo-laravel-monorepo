@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('author');
             $table->integer('priority');
             $table->string('created_by');
+            $table->integer('num_views')->default('0');
         });
     }
 

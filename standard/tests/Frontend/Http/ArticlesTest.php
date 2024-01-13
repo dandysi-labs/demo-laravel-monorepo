@@ -2,10 +2,8 @@
 
 namespace Tests\Frontend\Http;
 
-
 use App\Models\Article;
 use Tests\Frontend\TestCase;
-
 
 class ArticlesTest extends TestCase
 {
@@ -77,7 +75,8 @@ class ArticlesTest extends TestCase
             'author',
             'priority',
             'created_at',
-            'created_by'
+            'created_by',
+            'num_views'
         ];
 
         if ($expectedItems > 1) {

@@ -75,7 +75,8 @@ class ArticlesTest extends TestCase
             'author',
             'priority',
             'created_at',
-            'created_by'
+            'created_by',
+            'num_views'
         ];
 
         if ($expectedItems > 1) {

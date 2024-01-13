@@ -1,8 +1,15 @@
 FROM composer:2.2 as build
-COPY . /app/
-RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
+
+ARG MONOREPO_SOURCE_DIR
+ARG MONOREPO_LARAVEL_DIR
+
+COPY $MONOREPO_SOURCE_DIR /app/
+
+RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction --working-dir $MONOREPO_LARAVEL_DIR
 
 FROM php:8.2-buster as production
+
+ARG MONOREPO_LARAVEL_DIR
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -38,7 +45,7 @@ RUN echo 'memory_limit = 1024M' >> /usr/local/etc/php/conf.d/docker-php-memory_l
     echo 'max_execution_time = 300' >> /usr/local/etc/php/conf.d/docker-php-max_execution_time.ini && \
     echo 'expose_php = off' >> /usr/local/etc/php/conf.d/docker-php-disable_expose_php.ini
 
-COPY ./bin/start.sh /usr/local/bin/start
+COPY ./docker/start.sh /usr/local/bin/start
 
 RUN chmod +x /usr/local/bin/start
 
@@ -46,10 +53,12 @@ COPY --from=build /app /var/www
 
 RUN chown -R www-data:www-data /var/www
 
-WORKDIR /var/www
-
-ENTRYPOINT ["/usr/local/bin/start"]
-
 EXPOSE 8000
 
+WORKDIR "/var/www/$MONOREPO_LARAVEL_DIR"
+
+ENTRYPOINT ["start"]
+
 CMD ["web"]
+
+

@@ -1,0 +1,121 @@
+version: '3.5'
+
+x-common-laravel-attributes: &common-laravel-attributes
+  image: monorepo-blog-standard
+  healthcheck:
+    test: ['CMD', 'curl', '-fs', 'http://localhost:8000/health-check']
+    interval: 10s
+    retries: 5
+    start_period: 5s
+    timeout: 10s
+  depends_on:
+    db-master:
+      condition: service_healthy
+  networks: &networks
+    - monorepo
+
+x-common-laravel-envs: &common-laravel-envs
+  DB_CONNECTION: mysql
+  DB_HOST: db-master
+  DB_DATABASE: &db-database blog
+  DB_USERNAME: &db-master-user apimaster
+  DB_PASSWORD: &db-master-pass apimasterpass
+  LOG_CHANNEL: stderr
+
+x-common-db-envs: &common-db-envs
+  MARIADB_REPLICATION_USER: rep
+  MARIADB_REPLICATION_PASSWORD: reppass
+  MARIADB_DATABASE: *db-database
+  MARIADB_SKIP_TEST_DB: yes
+  ALLOW_EMPTY_PASSWORD: no
+
+x-common-db-attributes: &common-db-attributes
+  image: mariadb:lts
+  networks: *networks
+  healthcheck:
+    test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+    start_period: 10s
+    interval: 10s
+    timeout: 5s
+    retries: 3
+
+x-common-db-replication: &common-db-replication
+  healthcheck:
+    test: ["CMD", "healthcheck.sh", "--connect", "--replication_io", "--replication_sql", "--replication_seconds_behind_master=1", "--replication"]
+    interval: 10s
+    timeout: 5s
+    retries: 3
+  depends_on:
+    db-master:
+      condition: service_healthy
+
+
+services:
+  frontend:
+    <<: *common-laravel-attributes
+    # only have build on frontend - the others can use same image (avoids dangling images)
+    build:
+      args:
+        MONOREPO_SOURCE_DIR: ${MONOREPO_SOURCE_DIR}
+        MONOREPO_LARAVEL_DIR: ${MONOREPO_LARAVEL_DIR}
+    container_name: frontend
+    ports:
+      - '8001:8000'
+    depends_on:
+      - db-slave-1
+    environment:
+      <<: *common-laravel-envs
+      APP_KEY: base64:7u32uk/JWO7CGLkWqD6QMecVS0DyqBWCX7keFTxEElU=
+      MONOREPO_PROVIDER: ${MONOREPO_PROVIDER_PREFIX}Frontend\MonorepoProvider
+      SLAVE_DB_HOST: db-slave-1
+      SLAVE_DB_USERNAME: &db-slave-user apislave
+      SLAVE_DB_PASSWORD: &db-slave-pass apislavepass
+  backend:
+    <<: *common-laravel-attributes
+    container_name: backend
+    ports:
+      - '8002:8000'
+    environment:
+      <<: *common-laravel-envs
+      APP_KEY: base64:7u32uk/JWO7CGLkWqD6QMecVS0DyqBWCX7keFTxeelU=
+      MONOREPO_PROVIDER: ${MONOREPO_PROVIDER_PREFIX}Backend\MonorepoProvider
+  chores:
+    <<: *common-laravel-attributes
+    container_name: chores
+    command: cron
+    healthcheck:
+      test: ['CMD', '/var/www/laravel/artisan', 'common:health-check']
+    environment:
+      <<: *common-laravel-envs
+      APP_KEY: base64:7u32uk/JWO7CGLkWqD6QMecVS0DyqBWCX7kEFTxEElU=
+      MONOREPO_PROVIDER: ${MONOREPO_PROVIDER_PREFIX}Chores\MonorepoProvider
+  db-master:
+    <<: *common-db-attributes
+    container_name: db-master
+    environment:
+      <<: *common-db-envs
+      MARIADB_USER: *db-master-user
+      MARIADB_PASSWORD: *db-master-pass
+      MARIADB_REPLICATION_MODE: master
+      MARIADB_ROOT_PASSWORD: masterrootpass
+    volumes:
+      - ./docker/master.sql:/docker-entrypoint-initdb.d/master.sql
+    command: --log-bin --log-basename=mariadb
+  db-slave-1:
+    <<:
+      - *common-db-attributes
+      - *common-db-replication
+    container_name: db-slave-1
+    command: --server-id=2 --log-basename=mariadb --read-only=1 --replicate-ignore-table=mysql.user
+    environment:
+      <<: *common-db-envs
+      MARIADB_MASTER_HOST: db-master
+      MARIADB_USER: *db-slave-user
+      MARIADB_PASSWORD: *db-slave-pass
+      MARIADB_ROOT_PASSWORD: slaverootpass
+      MARIADB_HEALTHCHECK_GRANTS: REPLICA MONITOR
+    volumes:
+      - ./docker/slave.sql:/docker-entrypoint-initdb.d/slave.sql
+
+networks:
+  monorepo:
