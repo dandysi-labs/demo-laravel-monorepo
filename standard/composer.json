@@ -3,10 +3,6 @@
     "type": "project",
     "description": "Demo blog monorepo in standard laravel structure",
     "license": "MIT",
-    "repositories": [{
-        "type": "vcs",
-        "url": "https://github.com/dandysi-labs/laravel-monorepo"
-    }],
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
@@ -14,7 +10,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "fakerphp/faker": "^1.9.1",
-        "dandysi/laravel-monorepo": "dev-master"
+        "dandysi/laravel-monorepo": "1.0.0"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
