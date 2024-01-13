@@ -5,10 +5,10 @@ This repo contains two examples of the **dandysi/laravel-monorepo** package in u
 |Microservice|Description|URL|
 |:--|:--|:--|
 |Frontend|A frontend api returning published articles| http://localhost:8001/api|
-|Backend|A backend api allowing creation/deletion and publishing of articles| http://localhost:8001/api|
+|Backend|A backend api allowing creation/deletion and publishing of articles| http://localhost:8002/api|
 |Chores|A service running scheduled tasks. One runs every minute creating random articles. The other runs every 10 mins deleting all articles|N/A|
 
-Furthermore two database servers are running a master and replication slave. All microservices connect to the master database for reads/writes with the exception of the frontend. The frontend connects to the master for writes only and uses the replication slave for reads. The replication slave is delayed for 60 seconds behind the master for updates (to demonstrate that the frontend is connected to different server for read operations).
+Furthermore two database servers are running, one as a master and the other a replication slave. All microservices connect to the master database for reads/writes with the exception of the frontend. The frontend connects to the master for writes only and uses the replication slave for reads. The replication slave is delayed for 60 seconds behind the master for updates, to easily demonstrate that the frontend is connected to different server for read operations.
 
 ## Standard
 
